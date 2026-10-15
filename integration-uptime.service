@@ -1,0 +1,19 @@
+# systemd unit — copy to /etc/systemd/system/integration-uptime.service,
+# put the two secrets into /etc/integration-uptime.env (chmod 600):
+#   LH_INGEST_URL=https://dock.at-harbor.com/v1/ingest/123
+#   LH_INGEST_SECRET=…
+[Unit]
+Description=LinkHarbor uptime agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/integration-uptime.env
+ExecStart=/usr/bin/python3 /opt/integration-uptime/agent.py --url-check https://example.com --title "My website"
+Restart=always
+RestartSec=10
+User=nobody
+
+[Install]
+WantedBy=multi-user.target
